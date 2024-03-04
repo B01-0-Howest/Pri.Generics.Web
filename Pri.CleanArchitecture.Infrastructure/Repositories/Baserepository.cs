@@ -14,7 +14,7 @@ namespace Pri.CleanArchitecture.Infrastructure.Repositories
     public class BaseRepository<T> : IBaseRepository<T> where T : BaseEntity
     {
         private readonly ApplicationDbContext _applicationDbContext;
-        private readonly DbSet<T> _table;
+        protected readonly DbSet<T> _table;
         private ILogger<BaseRepository<T>> _logger;
 
         public BaseRepository(ApplicationDbContext applicationDbContext, ILogger<BaseRepository<T>> logger)
@@ -35,17 +35,17 @@ namespace Pri.CleanArchitecture.Infrastructure.Repositories
             return await SaveChanges();
         }
 
-        public IQueryable<T> GetAll()
+        public virtual IQueryable<T> GetAll()
         {
             return _table.AsQueryable();
         }
 
-        public async Task<IEnumerable<T>> GetAllAsync()
+        public virtual async Task<IEnumerable<T>> GetAllAsync()
         {
             return await _table.ToListAsync();
         }
 
-        public async Task<T> GetByIdAsync(int id)
+        public virtual async Task<T> GetByIdAsync(int id)
         {
             return await _table.FirstOrDefaultAsync(t => t.Id == id);
         }

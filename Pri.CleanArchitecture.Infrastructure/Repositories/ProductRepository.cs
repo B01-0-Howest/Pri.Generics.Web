@@ -11,93 +11,37 @@ using System.Threading.Tasks;
 
 namespace Pri.CleanArchitecture.Infrastructure.Repositories
 {
-    public class ProductRepository : IProductRepository
+    public class ProductRepository : BaseRepository<Product>, IProductRepository
     {
-        private readonly ApplicationDbContext _applicationDbContext;
-        private readonly ILogger<ProductRepository> _logger;
-
-        public ProductRepository(ApplicationDbContext applicationDbContext, ILogger<ProductRepository> logger)
+        public ProductRepository(ApplicationDbContext applicationDbContext, ILogger<BaseRepository<Product>> logger) : base(applicationDbContext, logger)
         {
-            _applicationDbContext = applicationDbContext;
-            _logger = logger;
         }
 
-        public async Task<bool> CreateAsync(Product toAdd)
+        public override IQueryable<Product> GetAll()
         {
-            _applicationDbContext.Products.Add(toAdd);
-            try
-            {
-               await _applicationDbContext.SaveChangesAsync();
-                return true;
-            }
-            catch (DbUpdateException dbUpdateException)
-            {
-                _logger.LogCritical(dbUpdateException.Message);
-                return false;
-            }
+            return _table.Include(p => p.Category)
+                .Include(p => p.Properties).AsQueryable();
         }
 
-        public async Task<bool> DeleteAsync(Product toDelete)
+        public override async Task<IEnumerable<Product>> GetAllAsync()
         {
-            _applicationDbContext.Remove(toDelete);
-            try
-            {
-                await _applicationDbContext.SaveChangesAsync();
-                return true;
-            }
-            catch (DbUpdateException dbUpdateException)
-            {
-                _logger.LogCritical(dbUpdateException.Message);
-                return false;
-            }
-        }
-
-        public IQueryable<Product> GetAll()
-        {
-            return _applicationDbContext.Products.AsQueryable();
-        }
-
-        public async Task<IEnumerable<Product>> GetAllAsync()
-        {
-            return await _applicationDbContext
-                .Products
-                .Include(p => p.Category)
-                .Include(p => p.Properties)
-                .ToListAsync();
+            return await _table.Include(p => p.Category)
+                .Include(p => p.Properties).ToListAsync();
         }
 
         public async Task<IEnumerable<Product>> GetByCategoryIdAsync(int categoryId)
         {
-            return await _applicationDbContext
-                .Products
+            return await _table
                 .Include(p => p.Category)
                 .Include(p => p.Properties)
-                .Where(p => p.CategoryId == categoryId)
-                .ToListAsync();
+                .Where(p => p.CategoryId == categoryId).ToListAsync();
         }
 
-        public async Task<Product> GetByIdAsync(int id)
+        public override async Task<Product> GetByIdAsync(int id)
         {
-            return await _applicationDbContext
-                .Products
-                .Include(p => p.Category)
+            return await _table.Include(p => p.Category)
                 .Include(p => p.Properties)
                 .FirstOrDefaultAsync(p => p.Id == id);
-        }
-
-        public async Task<bool> UpdateAsync(Product toUpdate)
-        {
-            _applicationDbContext.Products.Update(toUpdate);
-            try
-            {
-                await _applicationDbContext.SaveChangesAsync();
-                return true;
-            }
-            catch (DbUpdateException dbUpdateException)
-            {
-                _logger.LogCritical(dbUpdateException.Message);
-                return false;
-            }
         }
     }
 }

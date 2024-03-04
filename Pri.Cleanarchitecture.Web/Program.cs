@@ -15,7 +15,7 @@ builder.Services.AddScoped<IProductService,ProductService>();
 //Register database service
 builder.Services.AddDbContext<ApplicationDbContext>(options
     => options
-    .UseSqlServer(builder.Configuration.GetConnectionString("DefaultDatabase")));
+    .UseSqlServer(builder.Configuration.GetConnectionString("DefaultDatabase")).EnableSensitiveDataLogging());
 builder.Services.AddControllersWithViews();
 
 var app = builder.Build();

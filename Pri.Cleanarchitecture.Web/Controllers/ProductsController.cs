@@ -53,7 +53,7 @@ namespace Pri.Cleanarchitecture.Web.Controllers
         public async Task<IActionResult> Create()
         {
             var result = await _productService.CreateAsync
-                ("Pandoro",1,"very gooy dessert",9.00M,new List<int>() {10,2});
+                ("Pandoro",1,"very gooy dessert",9.00M,new List<int>() {1,2});
             if(result.IsSuccess)
             {
                 return RedirectToAction("Index");
