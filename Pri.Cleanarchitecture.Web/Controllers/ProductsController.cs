@@ -20,7 +20,7 @@ namespace Pri.Cleanarchitecture.Web.Controllers
             {
                 ProductsIndexViewModel productsIndexViewModel = new ProductsIndexViewModel();
                 productsIndexViewModel.Products
-                    = result.Products.Select(p =>
+                    = result.Result.Select(p =>
                     new BaseViewModel
                     {
                         Id = p.Id,
@@ -38,12 +38,12 @@ namespace Pri.Cleanarchitecture.Web.Controllers
                 ProductsDetailviewModel productsDetailViewModel 
                     = new ProductsDetailviewModel
                     {
-                        Id = result.Products.First().Id,
-                        Name = result.Products.First().Name,
-                        Price = result.Products.First().Price,
-                        Properties = result.Products.First().Properties
+                        Id = result.Result.Id,
+                        Name = result.Result.Name,
+                        Price = result.Result.Price,
+                        Properties = result.Result.Properties
                         .Select(p => p.Name),
-                        Category = result.Products.First().Category.Name,
+                        Category = result.Result.Category.Name,
                     };
                 return View(productsDetailViewModel);
             }

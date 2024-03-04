@@ -24,14 +24,14 @@ namespace Pri.CleanArchitecture.Core.Services
             _propertyRepository = propertyRepository;
         }
 
-        public async Task<ProductResultModel> CreateAsync(string name, int categoryId, string description, decimal price, IEnumerable<int> propertyIds)
+        public async Task<ResultModel<Product>> CreateAsync(string name, int categoryId, string description, decimal price, IEnumerable<int> propertyIds)
         {
             //check if product name exists
             if (await _productRepository
                 .GetAll()
                 .AnyAsync(p => p.Name.ToUpper() == name.ToUpper()))
             {
-                return new ProductResultModel
+                return new ResultModel<Product>
                 {
                     IsSuccess = false,
                     Errors = new List<string> { "Name exists!" }
@@ -40,7 +40,7 @@ namespace Pri.CleanArchitecture.Core.Services
             //check if categoryId exists
             if (!await _categoryRepository.GetAll().AnyAsync(c => c.Id == categoryId))
             {
-                return new ProductResultModel
+                return new ResultModel<Product>
                 {
                     IsSuccess = false,
                     Errors = new List<string> { "Unknown category!" }
@@ -51,7 +51,7 @@ namespace Pri.CleanArchitecture.Core.Services
             {
                 if (await _propertyRepository.GetByIdAsync(propertyId) == null)
                 {
-                    return new ProductResultModel
+                    return new ResultModel<Product>
                     {
                         IsSuccess = false,
                         Errors = new List<string> { "PropertyId does not exist!" }
@@ -72,79 +72,79 @@ namespace Pri.CleanArchitecture.Core.Services
             };
             if (await _productRepository.CreateAsync(newProduct))
             {
-                return new ProductResultModel
+                return new ResultModel<Product>
                 {
                     IsSuccess = true,
-                    Products = new List<Product> { newProduct }
+                    Result = newProduct
                 };
             }
-            return new ProductResultModel
+            return new ResultModel<Product>
             {
                 IsSuccess = false,
                 Errors = new List<string> { "Product not created!" }
             };
         }
 
-        public Task<ProductResultModel> DeleteAsync(int id)
+        public Task<ResultModel<Product>> DeleteAsync(int id)
         {
             throw new NotImplementedException();
         }
 
-        public async Task<ProductResultModel> GetAllAsync()
+        public async Task<ResultModel<IEnumerable<Product>>> GetAllAsync()
         {
             var products = await _productRepository.GetAllAsync();
             if (products.Count() > 0)
             {
-                return new ProductResultModel
+                return new ResultModel<IEnumerable<Product>>
                 {
                     IsSuccess = true,
-                    Products = products
+                    Result = products
                 };
             }
-            return new ProductResultModel
+            return new ResultModel<IEnumerable<Product>>
             {
                 IsSuccess = false,
                 Errors = new List<string> { "No products found!" }
             };
         }
 
-        public async Task<ProductResultModel> GetByIdAsync(int id)
+        public async Task<ResultModel<Product>> GetByIdAsync(int id)
         {
             var product = await _productRepository.GetByIdAsync(id);
             if (product == null)
             {
-                return new ProductResultModel
+                return new ResultModel<Product>
                 {
                     IsSuccess = false,
                     Errors = new List<string> { "Product not found!" }
                 };
             }
-            return new ProductResultModel
+            return new ResultModel<Product>
             {
                 IsSuccess = true,
-                Products = new List<Product> { product }
+                Result =  product
             };
         }
 
-        public async Task<ProductResultModel> SearchByCategoryIdAsync(int categoryId)
+        public async Task<ResultModel<IEnumerable<Product>>> SearchByCategoryIdAsync(int categoryId)
         {
             var products = await _productRepository.GetByCategoryIdAsync(categoryId);
             if (products.Count() > 0)
             {
-                return new ProductResultModel
+                return new ResultModel<IEnumerable<Product>>
                 {
                     IsSuccess = true,
-                    Products = products
+                    Result = products
                 };
             }
-            return new ProductResultModel
+            return new ResultModel<IEnumerable<Product>>
             {
                 IsSuccess = false,
                 Errors = new List<string> { "No products found!" }
             };
         }
 
-        public async Task<ProductResultModel> SearchByNameAsync(string name)
+        public async Task<ResultModel<IEnumerable<Product>>> SearchByNameAsync(string name)
         {
             var products = await _productRepository.GetAll()
                 .Include(p => p.Category)
@@ -153,20 +153,20 @@ namespace Pri.CleanArchitecture.Core.Services
                 .ToListAsync();
             if (products.Count() > 0)
             {
-                return new ProductResultModel
+                return new ResultModel<IEnumerable<Product>>
                 {
                     IsSuccess = true,
-                    Products = products
+                    Result = products
                 };
             }
-            return new ProductResultModel
+            return new ResultModel<IEnumerable<Product>>
             {
                 IsSuccess = false,
                 Errors = new List<string> { "No products found!" }
             };
         }
 
-        public Task<ProductResultModel> UpdateAsync(int id, string name, int categoryId, string description, decimal price, IEnumerable<int> propertyIds)
+        public Task<ResultModel<Product>> UpdateAsync(int id, string name, int categoryId, string description, decimal price, IEnumerable<int> propertyIds)
         {
             throw new NotImplementedException();
         }

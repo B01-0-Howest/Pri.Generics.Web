@@ -19,21 +19,21 @@ namespace Pri.CleanArchitecture.Core.Services
             _categoryRepository = categoryRepository;
         }
 
-        public async Task<CategoryResultModel> GetById(int id)
+        public async Task<ResultModel<Category>> GetById(int id)
         {
             var category = await _categoryRepository.GetByIdAsync(id);
             if(category == null)
             {
-                return new CategoryResultModel
+                return new ResultModel<Category>
                 {
                     IsSuccess = false,
                     Errors = new List<string>() { "Category not found!" }
                 };
             }
-            return new CategoryResultModel
+            return new ResultModel<Category>
             {
                 IsSuccess = true,
-                Categories = new List<Category> {category }
+                Result = category,
             };
         }
     }

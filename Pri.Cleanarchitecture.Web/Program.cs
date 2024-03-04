@@ -4,6 +4,7 @@ using Pri.CleanArchitecture.Core.Interfaces.Services;
 using Pri.CleanArchitecture.Core.Services;
 using Pri.CleanArchitecture.Infrastructure.Data;
 using Pri.CleanArchitecture.Infrastructure.Repositories;
+using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,7 +18,6 @@ builder.Services.AddDbContext<ApplicationDbContext>(options
     => options
     .UseSqlServer(builder.Configuration.GetConnectionString("DefaultDatabase")).EnableSensitiveDataLogging());
 builder.Services.AddControllersWithViews();
-
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
