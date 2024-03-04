@@ -7,8 +7,10 @@ using System.Threading.Tasks;
 
 namespace Pri.CleanArchitecture.Core.Services.Models
 {
-    public class ProductResultModel : BaseResultModel
+    public class ResultModel<T> : BaseEntity
     {
-        public IEnumerable<Product> Products { get; set; }
+        public bool IsSuccess { get; set; }
+        public IEnumerable<string> Errors { get; set; }
+        public T Result { get; set; }
     }
 }

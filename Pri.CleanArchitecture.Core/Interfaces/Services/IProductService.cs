@@ -11,13 +11,13 @@ namespace Pri.CleanArchitecture.Core.Interfaces.Services
 {
     public interface IProductService
     {
-        Task<ProductResultModel> GetAllAsync(); 
-        Task<ProductResultModel> GetByIdAsync(int id);
-        Task<ProductResultModel> 
+        Task<ResultModel<IEnumerable<Product>>> GetAllAsync(); 
+        Task<ResultModel<Product>> GetByIdAsync(int id);
+        Task<ResultModel<Product>>
             CreateAsync(string name,int categoryId,string description,decimal price, IEnumerable<int> propertyIds);
-        Task<ProductResultModel> UpdateAsync(int id,string name, int categoryId, string description, decimal price, IEnumerable<int> propertyIds);
-        Task<ProductResultModel> DeleteAsync(int id);
-        Task<ProductResultModel> SearchByNameAsync(string name);
-        Task<ProductResultModel> SearchByCategoryIdAsync(int categoryId);
+        Task<ResultModel<Product>> UpdateAsync(int id,string name, int categoryId, string description, decimal price, IEnumerable<int> propertyIds);
+        Task<ResultModel<Product>> DeleteAsync(int id);
+        Task<ResultModel<IEnumerable<Product>>> SearchByNameAsync(string name);
+        Task<ResultModel<IEnumerable<Product>>> SearchByCategoryIdAsync(int categoryId);
     }
 }
