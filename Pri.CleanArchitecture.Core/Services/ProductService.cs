@@ -47,16 +47,13 @@ namespace Pri.CleanArchitecture.Core.Services
                 };
             }
             //check if propertyIds exist
-            foreach (var propertyId in propertyIds)
+            if(propertyIds.Distinct().Count() != _propertyRepository.GetAll().Where(pr => propertyIds.Contains(pr.Id)).Count())
             {
-                if (await _propertyRepository.GetByIdAsync(propertyId) == null)
+                return new ResultModel<Product>
                 {
-                    return new ResultModel<Product>
-                    {
-                        IsSuccess = false,
-                        Errors = new List<string> { "PropertyId does not exist!" }
-                    };
-                }
+                    IsSuccess = false,
+                    Errors = new List<string> {"Property does not exist!"}
+                };
             }
             //create the entity
             //call the repo method
@@ -75,7 +72,7 @@ namespace Pri.CleanArchitecture.Core.Services
                 return new ResultModel<Product>
                 {
                     IsSuccess = true,
-                    Result = newProduct
+                    Result = await _productRepository.GetByIdAsync(newProduct.Id)
                 };
             }
             return new ResultModel<Product>
