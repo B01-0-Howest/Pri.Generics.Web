@@ -18,7 +18,8 @@ namespace Pri.WebApi.Food.Api.Controllers
         [HttpGet]
         public async Task<IActionResult> Get()
         {
-            return Ok(await _productService.GetAllAsync());
+            var result = await _productService.GetAllAsync();
+            return Ok(result.Result);
         }
         [HttpGet("{id:int}")]
         public IActionResult Get(int id)
