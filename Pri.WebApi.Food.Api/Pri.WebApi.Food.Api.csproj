@@ -14,8 +14,4 @@
     <ProjectReference Include="..\Pri.CleanArchitecture.Infrastructure\Pri.CleanArchitecture.Infrastructure.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Dtos\Request\" />
-  </ItemGroup>
-
 </Project>

@@ -1,6 +1,9 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Pri.CleanArchitecture.Core.Interfaces.Services;
+using Pri.WebApi.Food.Api.Dtos;
+using Pri.WebApi.Food.Api.Dtos.Response;
+using System.Xml.Linq;
 
 namespace Pri.WebApi.Food.Api.Controllers
 {
@@ -19,13 +22,86 @@ namespace Pri.WebApi.Food.Api.Controllers
         public async Task<IActionResult> Get()
         {
             var result = await _productService.GetAllAsync();
-            return Ok(result.Result);
+            if(result.IsSuccess)
+            {
+                return Ok(new ProductsDto
+                {
+                    Products = result.Result.Select(pr => new BaseDto 
+                    {
+                        Id = pr.Id,
+                        Name = pr.Name,
+                    })
+                });
+            }
+            return BadRequest(result.Errors);
         }
         [HttpGet("{id:int}")]
-        public IActionResult Get(int id)
+        public async Task<IActionResult> Get(int id)
         {
-            return Ok($"Products with id:{id}");
+            var result = await _productService
+                .GetByIdAsync(id);
+            if(result.IsSuccess)
+            {
+                return Ok(new ProductsDetailDto
+                {
+                    Id = result.Result.Id,
+                    Name = result.Result.Name,
+                    Price = result.Result.Price,
+                    Description = result.Result.Description,
+                    Category = new BaseDto
+                    {
+                        Id = result.Result.Category.Id,
+                        Name = result.Result.Category.Name,
+                    },
+                    Properties = result.Result.Properties
+                    .Select(pr => new BaseDto
+                    {
+                        Id = pr.Id,
+                        Name = pr.Name,
+                    })
+                });
+            }
+            return NotFound(result.Errors);
         }
+        [HttpGet("Search/ByName/{name}")]
+        public async Task<IActionResult> Search(string name)
+        {
+            var result = await _productService.SearchByNameAsync(name);
+            if (result.IsSuccess)
+            {
+                return Ok(new ProductsDto
+                {
+                    Products = result.Result.Select(pr => new BaseDto
+                    {
+                        Id = pr.Id,
+                        Name = pr.Name,
+                    })
+                });
+            }
+            return Ok(result.Errors);
+        }
+        [HttpGet("Search/ByCategory/{id}")]
+        public async Task<IActionResult> ByCategoryId(int id)
+        {
+            var result = await _productService.SearchByCategoryIdAsync(id);
+            if (result.IsSuccess)
+            {
+                return Ok(new ProductsDto
+                {
+                    Products = result.Result.Select(pr => new BaseDto
+                    {
+                        Id = pr.Id,
+                        Name = pr.Name,
+                    })
+                });
+            }
+            return Ok(result.Errors);
+        }
+        [HttpPost]
+        public async Task<IActionResult> Create()
+        {
 
+        }
     }
 }
+
